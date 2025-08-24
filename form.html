@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Vehicle Check Form</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <header>
+        <h1>Daily Vehicle Check Form</h1>
+    </header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="form.html">Driver Check Form</a>
+        <a href="dashboard.html">Manager Dashboard</a>
+        <a href="privacy.html">Privacy & Ethics</a>
+    </nav>
+    <div class="container">
+        <p>Please complete the following checklist before starting your journey. Required fields are marked with <span style="color:red;">*</span>.</p>
+        <!-- message area for submission feedback -->
+        <div id="message"></div>
+        <form id="inspectionForm" action="#" method="post" enctype="multipart/form-data">
+            <label for="date">Date and time <span style="color:red;">*</span></label>
+            <input type="datetime-local" id="date" name="date" required>
+
+            <label for="driver">Driver name <span style="color:red;">*</span></label>
+            <input type="text" id="driver" name="driver" placeholder="e.g. John Smith" required>
+
+            <label for="vehicle">Vehicle registration <span style="color:red;">*</span></label>
+            <input type="text" id="vehicle" name="vehicle" placeholder="e.g. AB12 CDE" required>
+
+            <label for="odometer">Odometer reading (miles) <span style="color:red;">*</span></label>
+            <input type="number" id="odometer" name="odometer" step="0.1" required>
+
+            <label>Checklist Items <span style="color:red;">*</span></label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="items" value="lights"> Lights</label>
+                <label><input type="checkbox" name="items" value="brakes"> Brakes</label>
+                <label><input type="checkbox" name="items" value="tyres"> Tyres</label>
+                <label><input type="checkbox" name="items" value="mirrors"> Mirrors</label>
+                <label><input type="checkbox" name="items" value="indicators"> Indicators</label>
+                <label><input type="checkbox" name="items" value="horn"> Horn</label>
+                <label><input type="checkbox" name="items" value="fluid_levels"> Fluid Levels</label>
+                <!-- Additional checklist items requested by the user -->
+                <label><input type="checkbox" name="items" value="camera"> Camera</label>
+                <label><input type="checkbox" name="items" value="interior_clean"> Interior Clean</label>
+                <label><input type="checkbox" name="items" value="diesel_tank_level"> Diesel Tank Level</label>
+                <label><input type="checkbox" name="items" value="windscreen"> Windscreen</label>
+                <label><input type="checkbox" name="items" value="body"> Body</label>
+                <label><input type="checkbox" name="items" value="wings"> Wings</label>
+                <label><input type="checkbox" name="items" value="headlights"> Headlights</label>
+                <label><input type="checkbox" name="items" value="interior_lights"> Interior Lights</label>
+                <label><input type="checkbox" name="items" value="oil_level"> Oil Level</label>
+                <label><input type="checkbox" name="items" value="adblue_level"> AdBlue Level</label>
+            </div>
+
+            <label for="notes">Notes / Defects</label>
+            <textarea id="notes" name="notes" rows="4" placeholder="Describe any issues or defects..."></textarea>
+
+            <label for="photo">Upload a photo (optional)</label>
+            <input type="file" id="photo" name="photo" accept="image/*">
+
+            <button type="submit">Submit Inspection</button>
+        </form>
+    </div>
+    <script src="script.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+      }
+    </script>
+</body>
+</html>

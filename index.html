@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Vehicle Check Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <header>
+        <h1>Daily Vehicle Check Portal</h1>
+    </header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="form.html">Driver Check Form</a>
+        <a href="dashboard.html">Manager Dashboard</a>
+        <a href="privacy.html">Privacy & Ethics</a>
+    </nav>
+    <div class="container">
+        <h2>Welcome!</h2>
+        <p>
+            This portal demonstrates a simple, digital workflow for heavy goods vehicle (HGV) pre‑trip inspections.
+            Instead of completing paper checklists, drivers can fill out an online form, attach photos of any defects,
+            and submit their inspection digitally. Managers can then review inspections, identify outstanding defects
+            and download reports.
+        </p>
+        <p>
+            Use the links above to navigate through the prototype. This site was built as a proof‑of‑concept for a
+            university project and does not store your data.
+        </p>
+    </div>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+      }
+    </script>
+</body>
+</html>

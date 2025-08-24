@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <header>
+        <h1>Manager Dashboard</h1>
+    </header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="form.html">Driver Check Form</a>
+        <a href="dashboard.html">Manager Dashboard</a>
+        <a href="privacy.html">Privacy & Ethics</a>
+    </nav>
+    <div class="container">
+        <p>This page displays inspection records saved locally in your browser. Use the form to add new entries. The data will persist in this browser only.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date &amp; Time</th>
+                    <th>Driver</th>
+                    <th>Vehicle</th>
+                    <th>Items Checked</th>
+                    <th>Defects/Notes</th>
+                </tr>
+            </thead>
+            <tbody id="inspectionTable">
+                <!-- rows will be inserted here via JavaScript -->
+            </tbody>
+        </table>
+        <p id="noDataMessage"></p>
+        <!-- Button to email the entire inspection history -->
+        <button id="emailHistoryBtn" type="button">Email History</button>
+        <p>Managers could filter by date, vehicle or driver and export the data as CSV for further analysis.</p>
+    </div>
+    <script src="script.js"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+      }
+    </script>
+</body>
+</html>
