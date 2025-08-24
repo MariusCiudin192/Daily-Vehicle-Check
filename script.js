@@ -171,3 +171,10 @@ function sendHistoryByEmail() {
     var mailtoLink = 'mailto:' + encodeURIComponent(recipientEmail) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
     window.location.href = mailtoLink;
 }
+// Când se apasă butonul de Fail, se colorează în roșu
+document.querySelectorAll('.fail-button').forEach(button => {
+  button.addEventListener('click', function () {
+    this.style.backgroundColor = 'red';
+    this.style.color = 'white';
+  });
+});
