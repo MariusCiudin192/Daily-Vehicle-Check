@@ -42,30 +42,24 @@
                 <div class="check-item">
                     <span>Lights</span>
                     <div class="buttons">
-                        <button type="button" class="pass-button" onclick="selectStatus(this, 'lights', 'pass')">Pass</button>
-                        <button type="button" class="fail-button" onclick="selectStatus(this, 'lights', 'fail')">Fail</button>
-                        <input type="radio" name="lights" value="pass" style="display:none;">
-                        <input type="radio" name="lights" value="fail" style="display:none;">
+                        <button type="button" class="pass-button">Pass</button>
+                        <button type="button" class="fail-button">Fail</button>
                     </div>
                 </div>
 
                 <div class="check-item">
                     <span>Brakes</span>
                     <div class="buttons">
-                        <button type="button" class="pass-button" onclick="selectStatus(this, 'brakes', 'pass')">Pass</button>
-                        <button type="button" class="fail-button" onclick="selectStatus(this, 'brakes', 'fail')">Fail</button>
-                         <input type="radio" name="brakes" value="pass" style="display:none;">
-                        <input type="radio" name="brakes" value="fail" style="display:none;">
+                        <button type="button" class="pass-button">Pass</button>
+                        <button type="button" class="fail-button">Fail</button>
                     </div>
                 </div>
 
                 <div class="check-item">
                     <span>Tyres</span>
                     <div class="buttons">
-                        <button type="button" class="pass-button" onclick="selectStatus(this, 'tyres', 'pass')">Pass</button>
-                        <button type="button" class="fail-button" onclick="selectStatus(this, 'tyres', 'fail')">Fail</button>
-                        <input type="radio" name="tyres" value="pass" style="display:none;">
-                        <input type="radio" name="tyres" value="fail" style="display:none;">
+                        <button type="button" class="pass-button">Pass</button>
+                        <button type="button" class="fail-button">Fail</button>
                     </div>
                 </div>
                 
@@ -85,26 +79,6 @@
     <script>
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('sw.js');
-      }
-
-      function selectStatus(buttonEl, itemName, status) {
-        // Logica pentru a selecta statusul si a colora butoanele
-        // Gaseste butoanele din acelasi grup
-        const parent = buttonEl.parentElement;
-        parent.querySelectorAll('button').forEach(btn => {
-            btn.classList.remove('selected-pass', 'selected-fail');
-        });
-
-        // Gaseste input-ul radio ascuns si bifeaza-l
-        const radioInput = parent.querySelector(`input[name="${itemName}"][value="${status}"]`);
-        if(radioInput) radioInput.checked = true;
-
-        // Adauga clasa de culoare
-        if (status === 'pass') {
-            buttonEl.classList.add('selected-pass');
-        } else {
-            buttonEl.classList.add('selected-fail');
-        }
       }
     </script>
 </body>
