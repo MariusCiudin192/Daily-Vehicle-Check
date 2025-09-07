@@ -93,3 +93,24 @@ table th, table td {
 table th {
     background-color: #f1f1f1;
 }
+.check-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.check-item .buttons button {
+    margin-left: 5px;
+}
+
+.selected-pass {
+    background-color: green;
+    color: white;
+}
+
+.selected-fail {
+    background-color: red;
+    color: white;
+}
