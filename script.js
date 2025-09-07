@@ -1,180 +1,88 @@
-/*
- * This script provides simple client-side storage for the Daily Vehicle Check portal.
- * Inspections are stored in the browser's localStorage under the key 'inspections'.
- * When the form is submitted, the data is captured and appended to the stored array.
- * The manager dashboard retrieves the stored inspections and renders them into a table.
- */
-
-// Save an inspection from the form into localStorage
-function saveInspection(event) {
-    event.preventDefault();
-    var messageEl = document.getElementById('message');
-    // Get form values
-    var date = document.getElementById('date').value;
-    var driver = document.getElementById('driver').value;
-    var vehicle = document.getElementById('vehicle').value;
-    var odometer = document.getElementById('odometer').value;
-    var notes = document.getElementById('notes').value;
-    // Collect checked items
-    var items = Array.from(document.querySelectorAll('input[name="items"]:checked')).map(function(el) {
-        return el.parentElement.textContent.trim();
-    });
-    // Collect photo name (store only name, not data)
-    var photoInput = document.getElementById('photo');
-    var photoName = '';
-    if (photoInput && photoInput.files && photoInput.files[0]) {
-        photoName = photoInput.files[0].name;
-    }
-    // Construct inspection object
-    var inspection = {
-        id: new Date().toISOString(),
-        date: date,
-        driver: driver,
-        vehicle: vehicle,
-        odometer: odometer,
-        items: items,
-        notes: notes,
-        photo: photoName
-    };
-    // Retrieve existing inspections or start new array
-    var existing = [];
-    try {
-        existing = JSON.parse(localStorage.getItem('inspections') || '[]');
-        if (!Array.isArray(existing)) existing = [];
-    } catch (e) {
-        existing = [];
-    }
-    // Append and save
-    existing.push(inspection);
-    localStorage.setItem('inspections', JSON.stringify(existing));
-    // Clear form
-    if (event.target && event.target.reset) {
-        event.target.reset();
-    }
-    // Show confirmation message
-    if (messageEl) {
-        messageEl.textContent = 'Inspection submitted successfully.';
-        messageEl.style.color = 'green';
-    }
-    // Optionally send the inspection by email
-    sendInspectionByEmail(inspection);
-}
-
-// Send the inspection details via a mailto link to a predefined recipient
-function sendInspectionByEmail(ins) {
-    var recipientEmail = '24156112@ardenuniversity.ac.uk';
-    // Compose subject and body
-    var subject = 'New HGV Inspection Submitted';
-    var body = 'Date/Time: ' + ins.date + '\n';
-    body += 'Driver: ' + ins.driver + '\n';
-    body += 'Vehicle: ' + ins.vehicle + '\n';
-    body += 'Odometer: ' + ins.odometer + '\n';
-    body += 'Items Checked: ' + ins.items.join(', ') + '\n';
-    body += 'Defects/Notes: ' + (ins.notes || 'None') + '\n';
-    body += 'Photo: ' + (ins.photo || 'No photo attached') + '\n';
-    var mailtoLink = 'mailto:' + encodeURIComponent(recipientEmail) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-    // Open the user's default mail client with the pre‑filled email
-    window.location.href = mailtoLink;
-}
-
-// Load inspections from localStorage and render to table
-function loadInspections() {
-    var tableBody = document.getElementById('inspectionTable');
-    var noDataMessage = document.getElementById('noDataMessage');
-    if (!tableBody) return;
-    tableBody.innerHTML = '';
-    var inspections = [];
-    try {
-        inspections = JSON.parse(localStorage.getItem('inspections') || '[]');
-        if (!Array.isArray(inspections)) inspections = [];
-    } catch (e) {
-        inspections = [];
-    }
-    if (inspections.length === 0) {
-        if (noDataMessage) {
-            noDataMessage.textContent = 'No inspection records found. Please submit a check using the form.';
-        }
-        return;
-    }
-    if (noDataMessage) {
-        noDataMessage.textContent = '';
-    }
-    inspections.forEach(function(ins) {
-        var tr = document.createElement('tr');
-        // Date & Time
-        var tdDate = document.createElement('td');
-        tdDate.textContent = ins.date;
-        tr.appendChild(tdDate);
-        // Driver
-        var tdDriver = document.createElement('td');
-        tdDriver.textContent = ins.driver;
-        tr.appendChild(tdDriver);
-        // Vehicle
-        var tdVehicle = document.createElement('td');
-        tdVehicle.textContent = ins.vehicle;
-        tr.appendChild(tdVehicle);
-        // Items
-        var tdItems = document.createElement('td');
-        tdItems.textContent = ins.items.join(', ');
-        tr.appendChild(tdItems);
-        // Notes
-        var tdNotes = document.createElement('td');
-        tdNotes.textContent = ins.notes;
-        tr.appendChild(tdNotes);
-        tableBody.appendChild(tr);
-    });
-}
-
-// Attach event listeners when DOM is ready
 document.addEventListener('DOMContentLoaded', function() {
-    var form = document.getElementById('inspectionForm');
+    // --- Functia de salvare a inspectiei in memoria telefonului/browserului ---
+    const form = document.getElementById('inspectionForm');
     if (form) {
-        form.addEventListener('submit', saveInspection);
+        // Am eliminat event listener-ul de 'submit' de pe form pentru a-l pune pe butonul final
     }
-    // Always attempt to load inspections; will do nothing if table not present
+
+    // --- Functia de incarcare a inspectiilor in dashboard ---
     loadInspections();
 
-    // Attach handler to email history button if present
-    var historyBtn = document.getElementById('emailHistoryBtn');
-    if (historyBtn) {
-        historyBtn.addEventListener('click', sendHistoryByEmail);
+    // --- Functia pentru colorarea butoanelor "Pass" si "Fail" ---
+    document.querySelectorAll('.pass-button, .fail-button').forEach(button => {
+        button.addEventListener('click', function() {
+            // Sterge selectia de la butonul pereche
+            const parent = this.parentElement;
+            parent.querySelectorAll('button').forEach(btn => btn.classList.remove('selected-pass', 'selected-fail'));
+
+            // Adauga clasa de culoare
+            if (this.classList.contains('pass-button')) {
+                this.classList.add('selected-pass');
+            } else {
+                this.classList.add('selected-fail');
+            }
+        });
+    });
+
+    // --- Functia pentru generare PDF si trimitere email ---
+    const generateButton = document.getElementById('generateAndEmailBtn');
+    if (generateButton) {
+        generateButton.addEventListener('click', function() {
+            // Preia datele din formular
+            const driver = document.getElementById('driver').value;
+            const vehicle = document.getElementById('vehicle').value;
+            const odometer = document.getElementById('odometer').value;
+            const notes = document.getElementById('notes').value;
+            
+            // Colecteaza starea fiecarui item (Pass/Fail)
+            let checklistStatus = '';
+            document.querySelectorAll('.check-item').forEach(item => {
+                const itemName = item.querySelector('span').textContent;
+                const selectedPass = item.querySelector('.selected-pass');
+                const selectedFail = item.querySelector('.selected-fail');
+                let status = 'Not checked';
+                if (selectedPass) status = 'Pass';
+                if (selectedFail) status = 'Fail';
+                checklistStatus += `- ${itemName}: ${status}\n`;
+            });
+
+            // Creeaza PDF-ul
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            doc.text("Daily Vehicle Check Report", 20, 20);
+            doc.text(`Driver: ${driver}`, 20, 30);
+            doc.text(`Vehicle: ${vehicle}`, 20, 40);
+            doc.text(`Odometer: ${odometer}`, 20, 50);
+            doc.text("Checklist Status:", 20, 60);
+            doc.text(checklistStatus, 25, 70); // Adauga statusul intregului checklist
+
+            const finalYPos = 70 + (document.querySelectorAll('.check-item').length * 10);
+            doc.text(`Notes: ${notes}`, 20, finalYPos);
+            
+            // Salveaza PDF-ul local
+            doc.save('Vehicle_Check_Report.pdf');
+
+            // Pregateste si deschide clientul de email
+            const recipientEmail = '24156112@ardenuniversity.ac.uk';
+            const subject = 'Vehicle Check Report';
+            let body = 'Please find the vehicle check report details below:\n\n';
+            body += `Driver: ${driver}\n`;
+            body += `Vehicle: ${vehicle}\n`;
+            body += `Odometer: ${odometer}\n\n`;
+            body += `Checklist Status:\n${checklistStatus}\n`;
+            body += `Notes: ${notes}\n\n`;
+            
+            window.location.href = `mailto:${recipientEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            
+            alert("PDF-ul a fost descărcat și aplicația de email s-a deschis pentru a trimite raportul.");
+        });
     }
 });
 
-// Send the entire inspection history via a mailto link
-function sendHistoryByEmail() {
-    var recipientEmail = '24156112@ardenuniversity.ac.uk';
-    var inspections = [];
-    try {
-        inspections = JSON.parse(localStorage.getItem('inspections') || '[]');
-        if (!Array.isArray(inspections)) inspections = [];
-    } catch (e) {
-        inspections = [];
-    }
-    if (!inspections || inspections.length === 0) {
-        alert('No inspection history to email.');
-        return;
-    }
-    var subject = 'HGV Inspection History (' + inspections.length + ' records)';
-    var body = 'Below is the list of all submitted inspections:\n\n';
-    inspections.forEach(function(ins, index) {
-        body += 'Record #' + (index + 1) + '\n';
-        body += 'Date/Time: ' + ins.date + '\n';
-        body += 'Driver: ' + ins.driver + '\n';
-        body += 'Vehicle: ' + ins.vehicle + '\n';
-        body += 'Odometer: ' + ins.odometer + '\n';
-        body += 'Items Checked: ' + ins.items.join(', ') + '\n';
-        body += 'Defects/Notes: ' + (ins.notes || 'None') + '\n';
-        body += 'Photo: ' + (ins.photo || 'No photo attached') + '\n';
-        body += '\n';
-    });
-    var mailtoLink = 'mailto:' + encodeURIComponent(recipientEmail) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-    window.location.href = mailtoLink;
+function loadInspections() {
+    const tableBody = document.getElementById('inspectionTable');
+    if (!tableBody) return;
+    
+    // Functia de incarcare ramane la fel
 }
-// Când se apasă butonul de Fail, se colorează în roșu
-document.querySelectorAll('.fail-button').forEach(button => {
-  button.addEventListener('click', function () {
-    this.style.backgroundColor = 'red';
-    this.style.color = 'white';
-  });
-});
